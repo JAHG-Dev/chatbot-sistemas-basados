@@ -1,0 +1,1 @@
+export const gptKey = process.env.NEXT_PUBLIC_GPT_KEY;
