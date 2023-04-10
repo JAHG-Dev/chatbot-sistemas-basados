@@ -12,7 +12,7 @@ const NotFound = () => {
     <>
       <Head>
         <title>
-          Error: Not Found | Chatbot Creare Club
+          Error: 404 | Chatbot Creare Club
         </title>
       </Head>
       <Box
@@ -30,7 +30,7 @@ const NotFound = () => {
             align="center"
             variant={mobileDevice ? 'h4' : 'h1'}
           >
-            404: The page you are looking for isn’t here
+            404: Página no encontrada
           </Typography>
           <Typography
             align="center"
@@ -38,9 +38,7 @@ const NotFound = () => {
             sx={{ mt: 0.5 }}
             variant="subtitle2"
           >
-            You either tried some shady route or you
-            came here by mistake. Whichever it is, try using the
-            navigation.
+            Lo sentimos, la página que buscas no existe. Regresa a la página principal.
           </Typography>
           <Box
             sx={{
@@ -68,14 +66,14 @@ const NotFound = () => {
             }}
           >
             <NextLink
-              href="/dashboard"
+              href="/"
               passHref
             >
               <Button
                 component="a"
                 variant="outlined"
               >
-                Back to Dashboard
+                Regresar a la página principal
               </Button>
             </NextLink>
           </Box>

@@ -12,7 +12,7 @@ const AuthorizationRequired = () => {
     <>
       <Head>
         <title>
-          Error: Authorization Required | Chatbot Creare Club
+          Error: No autorizado | Chatbot Creare Club
         </title>
       </Head>
       <Box
@@ -30,7 +30,7 @@ const AuthorizationRequired = () => {
             align="center"
             variant={mobileDevice ? 'h4' : 'h1'}
           >
-            401: Authorization required
+            401: No autorizado
           </Typography>
           <Typography
             align="center"
@@ -38,9 +38,7 @@ const AuthorizationRequired = () => {
             sx={{ mt: 0.5 }}
             variant="subtitle2"
           >
-            You either tried some shady route or you
-            came here by mistake. Whichever it is, try using the
-            navigation.
+            Lo sentimos, no tienes permiso para acceder a esta página.
           </Typography>
           <Box
             sx={{
@@ -68,14 +66,14 @@ const AuthorizationRequired = () => {
             }}
           >
             <NextLink
-              href="/dashboard"
+              href="/"
               passHref
             >
               <Button
                 component="a"
                 variant="outlined"
               >
-                Back to Dashboard
+                Regresar a la página principal
               </Button>
             </NextLink>
           </Box>

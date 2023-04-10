@@ -12,7 +12,7 @@ const ServerError = () => {
     <>
       <Head>
         <title>
-          Error: Server Error | Chatbot Creare Club
+          Error: Servidor | Chatbot Creare Club
         </title>
       </Head>
       <Box
@@ -30,7 +30,7 @@ const ServerError = () => {
             align="center"
             variant={mobileDevice ? 'h4' : 'h1'}
           >
-            500: Internal Server Error
+            500: Error interno del servidor
           </Typography>
           <Typography
             align="center"
@@ -38,9 +38,7 @@ const ServerError = () => {
             sx={{ mt: 0.5 }}
             variant="subtitle2"
           >
-            You either tried some shady route or you
-            came here by mistake. Whichever it is, try using the
-            navigation.
+            Lo sentimos, algo salió mal. Regresa a la página principal.
           </Typography>
           <Box
             sx={{
@@ -68,14 +66,14 @@ const ServerError = () => {
             }}
           >
             <NextLink
-              href="/dashboard"
+              href="/"
               passHref
             >
               <Button
                 component="a"
                 variant="outlined"
               >
-                Back to Dashboard
+                Regresar a la página principal
               </Button>
             </NextLink>
           </Box>
