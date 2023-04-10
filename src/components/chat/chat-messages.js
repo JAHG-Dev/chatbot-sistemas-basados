@@ -7,8 +7,8 @@ export const ChatMessages = (props) => {
   // To get the user from the authContext, you can use
   // `const { user } = useAuth();`
   const user = {
-    avatar: '/static/mock-images/avatars/avatar-anika_visser.png',
-    name: 'Anika Visser'
+    avatar: '',
+    name: 'Usuario'
   };
 
   return (
@@ -26,7 +26,7 @@ export const ChatMessages = (props) => {
         // we set the user details from user auth state instead of thread participants
         if (message.authorId === '5e86809283e28b96d2d38537') {
           authorAvatar = user.avatar;
-          authorName = 'Me';
+          authorName = 'Yo';
           authorType = 'user';
         } else {
           authorAvatar = participant.avatar;
@@ -43,6 +43,10 @@ export const ChatMessages = (props) => {
             contentType={message.contentType}
             createdAt={message.createdAt}
             key={message.id}
+            score={message.score}
+            textCorrection={message.textCorrection}
+            suggestions={message.suggestions}
+            isBot={message.isBot}
           />
         );
       })}

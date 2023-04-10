@@ -3,8 +3,6 @@ import { useRouter } from 'next/router';
 import { Box, Divider } from '@mui/material';
 import { useDispatch } from '../../store';
 import { addMessage } from '../../thunks/chat';
-import { ChatComposerToolbar } from './chat-composer-toolbar';
-import { ChatMessageAdd } from './chat-message-add';
 
 export const ChatComposer = (props) => {
   const dispatch = useDispatch();
@@ -48,11 +46,6 @@ export const ChatComposer = (props) => {
         flexGrow: 1
       }}
       {...props}>
-      <ChatComposerToolbar
-        onAddRecipient={handleAddRecipient}
-        onRemoveRecipient={handleRemoveRecipient}
-        recipients={recipients}
-      />
       <Box
         sx={{
           backgroundColor: 'background.default',
@@ -60,10 +53,6 @@ export const ChatComposer = (props) => {
         }}
       />
       <Divider />
-      <ChatMessageAdd
-        disabled={recipients.length === 0}
-        onSend={handleSendMessage}
-      />
     </Box>
   );
 };

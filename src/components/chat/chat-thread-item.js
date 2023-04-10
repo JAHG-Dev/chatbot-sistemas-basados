@@ -55,9 +55,10 @@ export const ChatThreadItem = (props) => {
     .reduce((names, participant) => [...names, participant.name], [])
     .join(', ');
   let content = '';
+  const mode = recipients[0].mode;
 
   if (lastMessage) {
-    const author = lastMessage.authorId === user.id ? 'Me: ' : '';
+    const author = lastMessage.authorId === user.id ? 'Yo: ' : '';
     const message = lastMessage.contentType === 'image'
       ? 'Sent a photo'
       : lastMessage.body;
@@ -127,6 +128,8 @@ export const ChatThreadItem = (props) => {
           variant="subtitle2"
         >
           {name}
+          {' '}
+          {mode}
         </Typography>
         <Box
           sx={{
@@ -155,16 +158,6 @@ export const ChatThreadItem = (props) => {
           </Typography>
         </Box>
       </Box>
-      <Typography
-        color="textSecondary"
-        sx={{ whiteSpace: 'nowrap' }}
-        variant="caption"
-      >
-        {formatDistanceStrict(lastMessage.createdAt, new Date(), {
-          addSuffix: false,
-          locale: customLocale
-        })}
-      </Typography>
     </ListItem>
   );
 };

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 
 export const Logo = styled((props) => {
-  const { variant, ...other } = props;
+  const { variant, height, width, ...other } = props;
 
   const color = variant === 'light' ? '#C1C4D6' : '#5048E5';
 
@@ -11,8 +11,8 @@ export const Logo = styled((props) => {
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       viewBox="0 0 750.47 739.65"
-      width={200}
-      height={200}
+      width={width || 200}
+      height={height || 200}
     >
       <defs>
         <linearGradient

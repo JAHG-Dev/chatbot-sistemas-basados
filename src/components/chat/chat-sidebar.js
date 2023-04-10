@@ -11,6 +11,7 @@ import { useSelector } from '../../store';
 import { Scrollbar } from '../scrollbar';
 import { ChatContactSearch } from './chat-contact-search';
 import { ChatThreadItem } from './chat-thread-item';
+import { Logo } from '../logo';
 
 const ChatSidebarDesktop = styled(Drawer)({
   flexShrink: 0,
@@ -40,50 +41,6 @@ export const ChatSidebar = (props) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const mdUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
-
-  const handleGroupClick = () => {
-    if (!mdUp) {
-      onClose?.();
-    }
-  };
-
-  const handleSearchClickAway = () => {
-    setIsSearchFocused(false);
-    setSearchQuery('');
-  };
-
-  const handleSearchChange = async (event) => {
-    try {
-      const { value } = event.target;
-
-      setSearchQuery(value);
-
-      if (value) {
-        const data = await chatApi.getContacts({ query: value });
-
-        setSearchResults(data);
-      } else {
-        setSearchResults([]);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleSearchFocus = () => {
-    setIsSearchFocused(true);
-  };
-
-  const handleSearchSelect = (result) => {
-    setIsSearchFocused(false);
-    setSearchQuery('');
-
-    if (!mdUp) {
-      onClose?.();
-    }
-
-    router.push(`/?threadKey=${result.id}`).catch(console.error);
-  };
 
   const handleSelectThread = (threadId) => {
     const thread = threads.byId[threadId];
@@ -117,23 +74,14 @@ export const ChatSidebar = (props) => {
           p: 2
         }}
       >
-        <Typography variant="h5">
-          Chats
-        </Typography>
+        <Logo
+          width={40}
+          height={40}
+        />
         <Box sx={{ flexGrow: 1 }} />
-        <NextLink
-          href="/?compose=true"
-          passHref
-        >
-          <Button
-            component="a"
-            onClick={handleGroupClick}
-            startIcon={<PlusIcon />}
-            variant="contained"
-          >
-            Group
-          </Button>
-        </NextLink>
+        <Typography variant="h5">
+          Gabriela
+        </Typography>
         <IconButton
           onClick={onClose}
           sx={{
@@ -146,15 +94,17 @@ export const ChatSidebar = (props) => {
           <XIcon fontSize="small" />
         </IconButton>
       </Box>
-      <ChatContactSearch
-        isFocused={isSearchFocused}
-        onChange={handleSearchChange}
-        onClickAway={handleSearchClickAway}
-        onFocus={handleSearchFocus}
-        onSelect={handleSearchSelect}
-        query={searchQuery}
-        results={searchResults}
-      />
+      <Box
+        sx={{
+          alignItems: 'center',
+          display: 'flex',
+          p: 2
+        }}
+      >
+        <Typography variant="body1">
+          Selecciona un modo de uso para comenzar
+        </Typography>
+      </Box>
       <Box
         sx={{
           borderTopColor: 'divider',

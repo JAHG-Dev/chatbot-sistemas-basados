@@ -91,7 +91,7 @@ const Chat = () => {
     <>
       <Head>
         <title>
-          Dashboard: Chat | Chatbot Creare Club
+          Chatbot Creare Club
         </title>
       </Head>
       <DashboardLayoutRoot>
@@ -172,7 +172,7 @@ const Chat = () => {
                       sx={{ mt: 2 }}
                       variant="subtitle1"
                     >
-                      Start meaningful conversations!
+                      Selecciona un modo para comenzar
                     </Typography>
                   </Box>
                 )}

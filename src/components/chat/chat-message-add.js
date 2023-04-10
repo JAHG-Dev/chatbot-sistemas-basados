@@ -12,8 +12,8 @@ export const ChatMessageAdd = (props) => {
   // To get the user from the authContext, you can use
   // `const { user } = useAuth();`
   const user = {
-    avatar: '/static/mock-images/avatars/avatar-anika_visser.png',
-    name: 'Anika Visser'
+    avatar: '',
+    name: 'Usuario'
   };
 
   const handleAttach = () => {
@@ -53,18 +53,19 @@ export const ChatMessageAdd = (props) => {
         sx={{
           display: {
             xs: 'none',
-            sm: 'inline'
+            sm: 'inline',
+            backgroundColor: 'transparent'
           },
           mr: 2
         }}
-        src={user.avatar}
+        src={'https://creare.club/wp-content/uploads/2021/09/cropped-favicon.png'}
       />
       <TextField
         disabled={disabled}
         fullWidth
         onChange={handleChange}
         onKeyUp={handleKeyUp}
-        placeholder="Leave a message"
+        placeholder="Escribe tu texto aquí..."
         value={body}
         size="small"
       />
@@ -77,7 +78,7 @@ export const ChatMessageAdd = (props) => {
           ml: 2
         }}
       >
-        <Tooltip title="Send">
+        <Tooltip title="Enviar mensaje">
           <Box sx={{ m: 1 }}>
             <IconButton
               color="primary"
@@ -92,44 +93,6 @@ export const ChatMessageAdd = (props) => {
               onClick={handleSend}
             >
               <PaperAirplaneIcon fontSize="small" />
-            </IconButton>
-          </Box>
-        </Tooltip>
-        <Tooltip title="Attach photo">
-          <Box
-            sx={{
-              display: {
-                xs: 'none',
-                sm: 'inline-flex'
-              },
-              m: 1
-            }}
-          >
-            <IconButton
-              disabled={disabled}
-              edge="end"
-              onClick={handleAttach}
-            >
-              <PhotographIcon fontSize="small" />
-            </IconButton>
-          </Box>
-        </Tooltip>
-        <Tooltip title="Attach file">
-          <Box
-            sx={{
-              display: {
-                xs: 'none',
-                sm: 'inline-flex'
-              },
-              m: 1
-            }}
-          >
-            <IconButton
-              disabled={disabled}
-              edge="end"
-              onClick={handleAttach}
-            >
-              <PaperClipIcon fontSize="small" />
             </IconButton>
           </Box>
         </Tooltip>

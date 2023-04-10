@@ -31,19 +31,19 @@ class CustomDocument extends Document {
           />
           <link
             rel="icon"
-            href="/favicon.ico"
+            href="https://creare.club/wp-content/uploads/2021/09/cropped-favicon.png"
           />
           <link
             rel="icon"
             type="image/png"
             sizes="32x32"
-            href="/favicon-32x32.png"
+            href="https://creare.club/wp-content/uploads/2021/09/cropped-favicon.png"
           />
           <link
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href="/favicon-16x16.png"
+            href="https://creare.club/wp-content/uploads/2021/09/cropped-favicon.png"
           />
           <meta
             name="theme-color"

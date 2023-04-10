@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNowStrict } from 'date-fns';
-import { Avatar, Box, Card, CardMedia, Link, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Card, CardMedia, Link, Typography } from '@mui/material';
 
 export const ChatMessage = (props) => {
-  const { body, contentType, createdAt, authorAvatar, authorName, authorType, ...other } = props;
+  const { body, contentType, createdAt, authorAvatar, authorName, authorType, score, textCorrection, suggestions, isBot, ...other } = props;
   const [expandMedia, setExpandMedia] = useState(false);
 
   return (
@@ -50,43 +50,63 @@ export const ChatMessage = (props) => {
               {authorName}
             </Link>
           </Box>
-          {contentType === 'image'
-            ? (
-              <CardMedia
-                onClick={() => setExpandMedia(true)}
-                image={body}
-                sx={{ height: 200 }}
-              />
+          {
+            score && (
+              <Box sx={{ mb: 1 }}>
+                <Alert severity={score > 70 ? 'success' : 'warning'}>
+                  Calificación: {score}
+                </Alert>
+                <br />
+              </Box>
             )
-            : (
+          }
+          {
+            textCorrection && (
+              <Typography
+                color="inherit"
+                variant="body1"
+              >
+                Corrección: {textCorrection}
+                <br />
+              </Typography>
+            )
+          }
+          {
+            suggestions && (
+              <>
+                <Typography
+                  color="inherit"
+                  variant="body1"
+                >
+                  <br />
+                  Sugerencias:
+                </Typography>
+                {
+                  suggestions.map((suggestion, key) => (
+                    <Typography
+                      color="inherit"
+                      variant="body1"
+                      key={key}
+                    >
+                      {key + 1}. {suggestion}
+                    </Typography>
+                  ))
+                }
+                <br />
+              </>
+            )
+          }
+          {
+            !isBot && (
               <Typography
                 color="inherit"
                 variant="body1"
               >
                 {body}
               </Typography>
-            )}
+            )
+          }
         </Card>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: authorType === 'user'
-              ? 'flex-end'
-              : 'flex-start',
-            mt: 1,
-            px: 2
-          }}
-        >
-          <Typography
-            color="textSecondary"
-            noWrap
-            variant="caption"
-          >
-            {formatDistanceToNowStrict(createdAt)}
-            {' '}
-            ago
-          </Typography>
-        </Box>
       </Box>
     </Box>
   );

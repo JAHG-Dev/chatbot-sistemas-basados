@@ -1,24 +1,18 @@
 import { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { formatDistanceToNowStrict } from 'date-fns';
 import {
   Avatar,
   AvatarGroup,
   Box,
-  IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
-  Tooltip,
   Typography
 } from '@mui/material';
 import { Archive as ArchiveIcon } from '../../icons/archive';
 import { Bell as BellIcon } from '../../icons/bell';
 import { Ban as BanIcon } from '../../icons/ban';
-import { Camera as CameraIcon } from '../../icons/camera';
-import { Phone as PhoneIcon } from '../../icons/phone';
-import { DotsHorizontal as DotsHorizontalIcon } from '../../icons/dots-horizontal';
 import { Trash as TrashIcon } from '../../icons/trash';
 
 export const ChatThreadToolbar = (props) => {
@@ -94,28 +88,14 @@ export const ChatThreadToolbar = (props) => {
               color="textSecondary"
               variant="caption"
             >
-              Last active
+              Instrucciones:
               {' '}
-              {formatDistanceToNowStrict(recipients[0].lastActivity, { addSuffix: true })}
+              {recipients[0]?.lastActivity}
             </Typography>
           )}
         </Box>
       </Box>
       <Box sx={{ flexGrow: 1 }} />
-      <IconButton>
-        <PhoneIcon fontSize="small" />
-      </IconButton>
-      <IconButton>
-        <CameraIcon fontSize="small" />
-      </IconButton>
-      <Tooltip title="More options">
-        <IconButton
-          onClick={handleMenuOpen}
-          ref={moreRef}
-        >
-          <DotsHorizontalIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
       <Menu
         anchorEl={moreRef.current}
         keepMounted
