@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { Box, Divider } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import { chatApi } from '../../__fake-api__/chat-api';
 import { useDispatch, useSelector } from '../../store';
 import { addMessage, getThread, markThreadAsSeen, setActiveThread } from '../../thunks/chat';
@@ -23,7 +23,7 @@ export const ChatThread = (props) => {
   const thread = useSelector((state) => threadSelector(state));
   const messagesRef = useRef(null);
   const [participants, setParticipants] = useState([]);
-  const [isReplying, setIsReplying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // To get the user from the authContext, you can use
   // `const { user } = useAuth();`
   const user = {
@@ -56,8 +56,8 @@ export const ChatThread = (props) => {
   };
 
   useEffect(() => {
-      getDetails();
-    },
+    getDetails();
+  },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [threadKey]);
 
@@ -68,10 +68,10 @@ export const ChatThread = (props) => {
 
       scrollElement.scrollTop = messagesRef.current.el.scrollHeight;
 
-      // Si el ultimo mensaje es del usuario actual, colocar isReplying en true
+      // Si el ultimo mensaje es del usuario actual, colocar isLoading en true
       const lastMessage = thread.messages[thread.messages.length - 1];
-      if (lastMessage.authorId === user.id) {
-        setIsReplying(true);
+      if (lastMessage.authorId !== user.id) {
+        setIsLoading(false);
       }
     }
   }, [thread]);
@@ -81,6 +81,9 @@ export const ChatThread = (props) => {
   // get the thread.
   const handleSendMessage = async (body) => {
     try {
+      setIsLoading(true);
+
+
       if (thread) {
         await dispatch(addMessage({
           threadId: thread.id,
@@ -150,7 +153,7 @@ export const ChatThread = (props) => {
       </Box>
       <Divider />
       <ChatMessageAdd
-        disabled={isReplying}
+        disabled={isLoading}
         onSend={handleSendMessage}
       />
     </Box>

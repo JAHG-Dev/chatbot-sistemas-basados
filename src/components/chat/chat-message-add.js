@@ -65,7 +65,7 @@ export const ChatMessageAdd = (props) => {
         fullWidth
         onChange={handleChange}
         onKeyUp={handleKeyUp}
-        placeholder="Escribe tu texto aquí..."
+        placeholder={ disabled ? "Procesando respuesta..." : "Escribe tu texto aquí..." }
         value={body}
         size="small"
       />
