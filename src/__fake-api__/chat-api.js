@@ -6,7 +6,7 @@ const now = new Date();
 
 const contacts = [
   {
-    id: '5e86805e2bafd54f66cc95c3',
+    id: 'gabrielaId',
     avatar: '',
     isActive: false,
     lastActivity: 'Escribe un mensaje en inglés. Gabriela responderá con el texto corregido, una calificación y sugerencias para mejorar.',
@@ -46,7 +46,7 @@ let threads = [
           Considera la capitalización adecuada al comienzo de una oración o al usar pronombres personales. \n
           Mantén un espacio adecuado entre las palabras.
         `,
-        score : 75,
+        score: 75,
         textCorrection: 'Hi, nice to meet you, my dear Mexican friend. How are you today?',
         suggestions: [
           'Utiliza comas para separar frases o elementos en una oración.',
@@ -56,12 +56,12 @@ let threads = [
         ],
         contentType: 'text',
         createdAt: subDays(subHours(now, 10), 4).getTime(),
-        authorId: '5e86805e2bafd54f66cc95c3',
+        authorId: 'gabrielaId',
         isBot: true
       },
     ],
     participantIds: [
-      '5e86805e2bafd54f66cc95c3',
+      'gabrielaId',
       '5e86809283e28b96d2d38537'
     ],
     type: 'ONE_TO_ONE',
@@ -285,7 +285,7 @@ class ChatApi {
   addMessage(request) {
     const { threadId, recipientIds, body } = request;
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         if (!(threadId || recipientIds)) {
           reject(new Error('Thread ID or recipient IDs has to be provided'));
@@ -343,10 +343,79 @@ class ChatApi {
 
         thread.messages.push(message);
 
+        // Realizar peticion POST  a la API de GPT-3. Como prompt debe pasarse que debe corregir el texto del body, se le debe asignar una calificacion a la respuesta entre 1 y 100, Debe responder con sugerencias para mejorar el uso del ingles 
+
+        const GPT_KEY = process.env.NEXT_PUBLIC_GPT_KEY
+
+        // Se debe crear un prompt con el texto a corregir, las sugerencias y la calificacion. Se debe colocar de tal forma que podamos saber cada parte del prompt para poder extraer la informacion de la respuesta
+        const bodyPrompt = `
+        As a professional English teacher, please correct the following text, provide a score between 1 and 100 without '/100', and give suggestions to improve the use of English:
+        ${body}
+        [CORRECTED_TEXT_STARTS]Corrected Text:[CORRECTED_TEXT_ENDS]
+        [SCORE_STARTS]Score:[SCORE_ENDS]
+        [SUGGESTIONS_STARTS]Suggestions:
+        1.
+        2.
+        3.
+        [SUGGESTIONS_ENDS]
+        `
+        const request = {
+          "model": "gpt-3.5-turbo",
+          "messages": [{ "role": "assistant", "content": bodyPrompt }],
+          "temperature": 0.7
+        }
+
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GPT_KEY}`
+          },
+          body: JSON.stringify(request)
+        })
+
+        const data = await response.json()
+
+        console.log('data', data)
+        
+        const responseText = data.choices[0].message.content;
+
+        // Separa la respuesta en líneas y extrae las partes relevantes
+        const lines = responseText.trim().split('\n');
+        const correctedText = lines[0].substring("Corrected Text: ".length);
+        const score = parseInt(lines[2].substring("Score: ".length), 10);
+        // Suggestions se encuentran despues de la linea "Suggestions: " y hay una por cada linea hasta el final
+        const suggestionsLength = lines.length - 5;
+        const suggestions = lines.slice(5, 5 + suggestionsLength);
+
+        console.log('correctedText', correctedText)
+        console.log('score', score)
+        console.log('suggestions', suggestions)
+
+        const message2 = {
+          id: createResourceId(),
+          attachments: [],
+          body: data.choices[0].message.content,
+          contentType: 'text',
+          createdAt: new Date().getTime(),
+          authorId: 'gabrielaId',
+          score: score,
+          textCorrection: correctedText,
+          suggestions: suggestions,
+          isBot: true
+        };
+
+        console.log('message2', message2)
+
+        thread.messages.push(message2);
+
+        console.log('thread', thread);
+
         resolve({
           threadId: thread.id,
-          message
+          message: message2
         });
+
       } catch (err) {
         console.error('[Chat Api]: ', err);
         reject(new Error('Internal server error'));

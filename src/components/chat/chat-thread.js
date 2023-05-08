@@ -23,6 +23,7 @@ export const ChatThread = (props) => {
   const thread = useSelector((state) => threadSelector(state));
   const messagesRef = useRef(null);
   const [participants, setParticipants] = useState([]);
+  const [isReplying, setIsReplying] = useState(false);
   // To get the user from the authContext, you can use
   // `const { user } = useAuth();`
   const user = {
@@ -66,6 +67,12 @@ export const ChatThread = (props) => {
       const scrollElement = messagesRef.current.getScrollElement();
 
       scrollElement.scrollTop = messagesRef.current.el.scrollHeight;
+
+      // Si el ultimo mensaje es del usuario actual, colocar isReplying en true
+      const lastMessage = thread.messages[thread.messages.length - 1];
+      if (lastMessage.authorId === user.id) {
+        setIsReplying(true);
+      }
     }
   }, [thread]);
 
@@ -78,6 +85,11 @@ export const ChatThread = (props) => {
         await dispatch(addMessage({
           threadId: thread.id,
           body
+        }));
+
+        // Actualizar los mensajes del thread
+        await dispatch(getThread({
+          threadKey: thread.id
         }));
       } else {
         const recipientIds = participants
@@ -138,7 +150,7 @@ export const ChatThread = (props) => {
       </Box>
       <Divider />
       <ChatMessageAdd
-        disabled={false}
+        disabled={isReplying}
         onSend={handleSendMessage}
       />
     </Box>

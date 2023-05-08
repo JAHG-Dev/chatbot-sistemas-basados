@@ -1,11 +1,29 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNowStrict } from 'date-fns';
-import { Alert, Avatar, Box, Card, CardMedia, Link, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardMedia, Link, Typography } from '@mui/material';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 
 export const ChatMessage = (props) => {
   const { body, contentType, createdAt, authorAvatar, authorName, authorType, score, textCorrection, suggestions, isBot, ...other } = props;
   const [expandMedia, setExpandMedia] = useState(false);
+
+  const handleTextToSpeech = async (text) => {
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      // Usar voz de Bahn 
+      utterance.lang = 'en-US';
+      utterance.voice = speechSynthesis.getVoices()[15];
+      utterance.rate = 1;
+      utterance.pitch = 1;
+
+      window.speechSynthesis.speak(utterance);
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Box
@@ -19,15 +37,17 @@ export const ChatMessage = (props) => {
         mb: 2
       }}
       {...other}>
-      <Avatar
-        src={authorAvatar || undefined}
-        sx={{
-          height: 32,
-          ml: authorType === 'user' ? 2 : 0,
-          mr: authorType === 'user' ? 0 : 2,
-          width: 32
-        }}
-      />
+      <Button
+        onClick={() => handleTextToSpeech(body)}
+      >
+        <PlayCircleIcon
+          sx={{
+            color: 'primary.main',
+            fontSize: 32,
+            m: 'auto'
+          }}
+        />
+      </Button>
       <Box sx={{ flexGrow: 1 }}>
         <Card
           sx={{

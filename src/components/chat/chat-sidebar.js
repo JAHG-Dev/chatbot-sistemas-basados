@@ -74,13 +74,18 @@ export const ChatSidebar = (props) => {
           p: 2
         }}
       >
-        <Logo
-          width={40}
-          height={40}
-        />
+        <NextLink
+          href="/"
+          passHref
+        >
+          <Logo
+            width={40}
+            height={40}
+          />
+        </NextLink>
         <Box sx={{ flexGrow: 1 }} />
         <Typography variant="h5">
-          Gabriela
+          Gabot
         </Typography>
         <IconButton
           onClick={onClose}
