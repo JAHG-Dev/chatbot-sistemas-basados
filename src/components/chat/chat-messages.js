@@ -29,14 +29,11 @@ export const ChatMessages = (props) => {
           authorName = 'Yo';
           authorType = 'user';
         } else {
-          authorAvatar = participant.avatar;
-          authorName = participant.name;
           authorType = 'contact';
         }
 
         return (
           <ChatMessage
-            authorAvatar={authorAvatar}
             authorName={authorName}
             authorType={authorType}
             body={message.body}
@@ -47,6 +44,7 @@ export const ChatMessages = (props) => {
             textCorrection={message.textCorrection}
             suggestions={message.suggestions}
             isBot={message.isBot}
+            translatedText={message.translatedText ? message.translatedText : 'Traduccion no disponible'}
           />
         );
       })}

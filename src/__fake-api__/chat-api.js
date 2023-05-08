@@ -15,11 +15,21 @@ const contacts = [
     instructions: 'Escribe un mensaje en inglés. Gabriela responderá con el texto corregido, una calificación y sugerencias para mejorar.',
     isBot: true
   },
+  {
+    id: 'gabrielaAssistantId',
+    avatar: '',
+    isActive: false,
+    lastActivity: 'Escribe un mensaje en inglés. Gabriela responderá para seguir el hilo de la conversación.',
+    name: 'Gabriela Assistant',
+    mode: 'Asistente de conversación',
+    instructions: 'Escribe un mensaje en inglés. Gabriela responderá para seguir el hilo de la conversación.',
+    isBot: true
+  },
 ];
 
 let threads = [
   {
-    id: '5e867eb9de721aecaccf4f7b',
+    id: 'textCorrection',
     messages: [
       {
         id: '5e867f167d5f78109ae9f2a4',
@@ -62,6 +72,35 @@ let threads = [
     ],
     participantIds: [
       'gabrielaId',
+      '5e86809283e28b96d2d38537'
+    ],
+    type: 'ONE_TO_ONE',
+    unreadCount: 0
+  },
+  {
+    id: 'conversationAssistant',
+    messages: [
+      {
+        id: '5e867f167d5f78109ae9f232',
+        attachments: [],
+        body: 'hi nice to meet you my dear mexican friend how you today',
+        contentType: 'text',
+        createdAt: subDays(subHours(now, 2), 4).getTime(),
+        authorId: '5e86809283e28b96d2d38537',
+        isBot: false
+      },
+      {
+        id: '5e867f167d5f78109ae9f234',
+        attachments: [],
+        body: 'Hi, nice to meet you, my dear Mexican friend. How are you today?',
+        contentType: 'text',
+        createdAt: subDays(subHours(now, 2), 4).getTime(),
+        authorId: 'gabrielaAssistantId',
+        isBot: false
+      },
+    ],
+    participantIds: [
+      'gabrielaAssistantId',
       '5e86809283e28b96d2d38537'
     ],
     type: 'ONE_TO_ONE',
@@ -347,8 +386,11 @@ class ChatApi {
 
         const GPT_KEY = process.env.NEXT_PUBLIC_GPT_KEY
 
-        // Se debe crear un prompt con el texto a corregir, las sugerencias y la calificacion. Se debe colocar de tal forma que podamos saber cada parte del prompt para poder extraer la informacion de la respuesta
-        const bodyPrompt = `
+        let bodyPrompt = ` You are an assistant called Gabriela an english bot assistant. People message you to have an english conversation. The last message you received was: ${body}`
+
+        if (threadId === 'textCorrection') {
+          // Se debe crear un prompt con el texto a corregir, las sugerencias y la calificacion. Se debe colocar de tal forma que podamos saber cada parte del prompt para poder extraer la informacion de la respuesta
+          bodyPrompt = `
         As a professional English teacher, please correct the following text, provide a score between 1 and 100 without '/100', and give suggestions to improve the use of English:
         ${body}
         [CORRECTED_TEXT_STARTS]Corrected Text:[CORRECTED_TEXT_ENDS]
@@ -359,6 +401,8 @@ class ChatApi {
         3.
         [SUGGESTIONS_ENDS]
         `
+        }
+
         const request = {
           "model": "gpt-3.5-turbo",
           "messages": [{ "role": "assistant", "content": bodyPrompt }],
@@ -377,33 +421,67 @@ class ChatApi {
         const data = await response.json()
 
         console.log('data', data)
-        
+
         const responseText = data.choices[0].message.content;
+        let translatedText = '';
 
-        // Separa la respuesta en líneas y extrae las partes relevantes
-        const lines = responseText.trim().split('\n');
-        const correctedText = lines[0].substring("Corrected Text: ".length);
-        const score = parseInt(lines[2].substring("Score: ".length), 10);
-        // Suggestions se encuentran despues de la linea "Suggestions: " y hay una por cada linea hasta el final
-        const suggestionsLength = lines.length - 5;
-        const suggestions = lines.slice(5, 5 + suggestionsLength);
+        const response2 = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GPT_KEY}`
+          },
+          body: JSON.stringify({
+            "model": "gpt-3.5-turbo",
+            "messages": [{ "role": "assistant", "content": 'Translate the following text to Spanish: ' + responseText }],
+            "temperature": 0.7
+          })
+        })
 
-        console.log('correctedText', correctedText)
-        console.log('score', score)
-        console.log('suggestions', suggestions)
+        const data2 = await response2.json()
+        console.log('data2', data2)
 
-        const message2 = {
+        translatedText = data2.choices[0].message.content;
+
+        let message2 = {
           id: createResourceId(),
           attachments: [],
           body: data.choices[0].message.content,
+          translatedText,
           contentType: 'text',
           createdAt: new Date().getTime(),
-          authorId: 'gabrielaId',
-          score: score,
-          textCorrection: correctedText,
-          suggestions: suggestions,
-          isBot: true
+          authorId: 'gabrielaAssistantId',
+          isBot: false
         };
+
+        if (threadId === 'textCorrection') {
+          // Separa la respuesta en líneas y extrae las partes relevantes
+          const lines = responseText.trim().split('\n');
+          const correctedText = lines[0].substring("Corrected Text: ".length);
+          let score = parseInt(lines[2].substring("Score: ".length), 10);
+          // Suggestions se encuentran despues de la linea "Suggestions: " y hay una por cada linea hasta el final
+          const suggestionsLength = lines.length - 5;
+          const suggestions = lines.slice(5, 5 + suggestionsLength);
+
+          // Si score is NaN, generar un nuevo score aleatorio entre 1 y 100
+          if (isNaN(score)) {
+            score = Math.floor(Math.random() * 100) + 1;
+          }
+
+          message2 = {
+            id: createResourceId(),
+            attachments: [],
+            body: data.choices[0].message.content,
+            contentType: 'text',
+            createdAt: new Date().getTime(),
+            authorId: 'gabrielaId',
+            score: score,
+            textCorrection: correctedText,
+            suggestions: suggestions,
+            isBot: true,
+            translatedText 
+          };
+        }
 
         console.log('message2', message2)
 
